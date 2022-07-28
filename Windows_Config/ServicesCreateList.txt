@@ -1,0 +1,5 @@
+sc create iotTest1 binpath= "C:\Worker3\Publish\App.WindowsService.exe \"HostName=IotHub.azure-devices.net;DeviceId=Device1;SharedAccessKey=xxxx;GatewayHostname=Eflow-EFLOW\""
+
+sc create iotTest2 binpath= "C:\Worker3\Publish\App.WindowsService.exe \"HostName=IotHub.azure-devices.net;DeviceId=Device2;SharedAccessKey=xxxy=;GatewayHostname=Eflow-EFLOW\""
+
+sc create iotTest3 binpath= "C:\Worker3\Publish\App.WindowsService.exe \"HostName=IotHub.azure-devices.net;DeviceId=Device3;SharedAccessKey=xxxz;GatewayHostname=Eflow-EFLOW\""

@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>true</ImplicitUsings>
+    <RootNamespace>App.WindowsService</RootNamespace>
+    <OutputType>exe</OutputType>
+    <PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="BAckup2\**" />
+    <Compile Remove="BAckup3_very_duff\**" />
+    <Compile Remove="BAckup\**" />
+    <Compile Remove="Publish\**" />
+    <Content Remove="BAckup2\**" />
+    <Content Remove="BAckup3_very_duff\**" />
+    <Content Remove="BAckup\**" />
+    <Content Remove="Publish\**" />
+    <EmbeddedResource Remove="BAckup2\**" />
+    <EmbeddedResource Remove="BAckup3_very_duff\**" />
+    <EmbeddedResource Remove="BAckup\**" />
+    <EmbeddedResource Remove="Publish\**" />
+    <None Remove="BAckup2\**" />
+    <None Remove="BAckup3_very_duff\**" />
+    <None Remove="BAckup\**" />
+    <None Remove="Publish\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Worker2-1.zip" />
+    <None Remove="Worker2.zip" />
+    <None Remove="Worker3.zip" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Azure.Devices.Client" Version="1.41.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.16.1" />
+    
+  </ItemGroup>
+</Project>
