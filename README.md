@@ -5,6 +5,24 @@ Code for creating a Windows Service to run as Leaf Device(s) on the Windows Host
 
 Build a supportable replacement for Windows dependent IoT Edge 1.1 Windows container workloads.
 
+A number of customers are currently using Azure IoT Edge version 1.1 Windows on Windows. This uses Windows containers. This product becomes end-of-life in December 2022 and these customers need to move to an alternative version of IoT Edge if they require to stay on a supported platform.
+
+For some of these customers, the process is more difficult as they were "forced" to use Windows containers by hard dependencies within the code that they are running within the container. The OSI PI AF SDK is a good example of this. There's still no defined roadmap for a non-Windows version of this SDK.
+
+This experiment aims to show that a satisfactory solution can be built using the Interoperability of EFLOW (**E**dge **F**or **L**inux **O**n **W**indows).
+
+What's EFLOW? EFLOW is a means to run IoT Edge software on a Windows PC or Server within a managed Linux VM. See https://docs.microsoft.com/en-gb/azure/iot-edge/iot-edge-for-linux-on-windows?view=iotedge-2020-11
+
+![image](https://user-images.githubusercontent.com/41492097/185413360-ae4838d8-f332-4e56-9fbb-a9021d98329f.png)
+
+Within the Windows Host, the Linux VM is managed by Windows Update so the complexity and overhead of keeping a Linux environment patched and up to date is mitigated by it being bundled within a framework well known to most IT departments.
+
+For the particular customer this was created for, there were two additional challenges:
+
+1. The IoT Edge 1.1 instances run on Azure VMs in the data centre. This requires the use of Nested Virtualisation and limits networking to the use of an Internal virtual switch, i.e. only NAT available for outbound network from the EFLOW Linux VM.
+
+2. The customer ran multiple instances of the same container in a single edge instance using Module Twins to control behaviour of each instance. Updating container code was relatively simple. They requested that updating the code needed to be a simple process with minimal outage time.
+
 ## Architecture to replace
 
 IoT Edge 1.1 Windows on Windows with multiple data extraction containers per IoT Edge Instance. These containers all use the same image but have different configurations set at Module Twin Level.
@@ -13,7 +31,7 @@ IoT Edge 1.1 Windows on Windows with multiple data extraction containers per IoT
 
 EFLOW running on Azure Windows Server VM. Multiple Windows Services running on the Windows Host acting as "Leaf" devices to EFLOW. All services run from the same executable code but can be configured from the command line at service creation time. (Stretch target - add Device Twin Configuration too)
 
-## Process##
+## Process
 
 ### 1 - Set up Azure VM and Eflow
 
@@ -91,7 +109,7 @@ The only certificate files you need at the end of this process are listed below.
 
 9.	If you’ve already had IoT Edge running, delete the contents of these directories :
 
-  >a.	/var/lib/iotedge/hsm certs
+  >a.	/var/lib/iotedge/hsm certs  
   >b.	/var/lib/iotedge/hsm cert_keys
   
 10.	Run sudo iotedge check – ensure that the config yaml is well formed and that it doesn’t contain a message like:
@@ -123,11 +141,13 @@ The devices need to trust the certificate that IoT Edge presents to them. To do 
 
 The code in this repository works and should just need compiling. There are a couple of items to note in the code:
 
- 1. The example was built on top of a public Microsoft example. Most of the core code is still there and the code puts jokes in the log every 10 minutes. With a more skilled coder, this could be removed.
+ 1. The example was built on top of a public Microsoft example. Most of the core code is still there and the code puts jokes in the log every 10 minutes. With a more skilled coder, this could be removed. Original example can be found at https://docs.microsoft.com/en-us/dotnet/core/extensions/windows-service 
  
  2. WindowsBackgroundService.cs - Line 14. If wanting to test the code directly you can put an IoT Hub connection string in this line and comment out line 15.
  
  3. WindowsBackgroundService.cs - Line 32. This is commented out as it's not required as the certificate is already installed in the trust store. The InstallACert code doesn't work when run in a service as it triggers a UI action that doesn't get surfaced.
+ 
+ 4. The code runs an IoT Device SDK Temperature and Humidity simulator sending data to IoT Hub every second.
 
  
 ## 5 Deploy Windows Service Code
@@ -149,5 +169,11 @@ Once edited, change the extension of the file to .bat if you want to run it with
 Open the Services tool, the services should be listed but not running. right click on a service to open the context menu and select start, the service should start sending data to IoT Hub via the EFLOW IoT Edge instance. Repeat for the other service instances.
  
 You can change other service parameters to set up auto-start and recovery options.
+ 
+ ## 9 Upgrading Service Code
+ 
+ 1. Manually stop the service instances, this could be done with a script (SC stop <service name>)
+ 2. Replace the .Exe
+ 3. Re-start the service instances, again this could be scripted
 
 
