@@ -58,12 +58,12 @@ As IoT Edge will be running as a transparent gateway, IoT Edge needs to present 
 
 To create the certificates for test purposes, Microsoft has supplied a set of convenience scripts that will generate certificates that work… by default the certificate password is insecure and the certificate only has a 30 day life. You can edit the script to improve this.
 
-The instructions for using these scripts are at https://docs.microsoft.com/en-gb/azure/iot-edge/how-to-create-test-certificates?view=iotedge-2020-11
+The instructions for using these scripts are at <https://docs.microsoft.com/en-gb/azure/iot-edge/how-to-create-test-certificates?view=iotedge-2020-11>
 For this scenario where we’re creating the certificates for TLS communications between IoT Edge and either Modules or Devices you only need to create the certificates specified in the following sections
  
->https://docs.microsoft.com/en-gb/azure/iot-edge/how-to-create-test-certificates?view=iotedge-2020-11#create-root-ca-certificate  
+> <https://docs.microsoft.com/en-gb/azure/iot-edge/how-to-create-test-certificates?view=iotedge-2020-11#create-root-ca-certificate>  
 > 
->https://docs.microsoft.com/en-gb/azure/iot-edge/how-to-create-test-certificates?view=iotedge-2020-11#create-iot-edge-ca-certificates 
+> <https://docs.microsoft.com/en-gb/azure/iot-edge/how-to-create-test-certificates?view=iotedge-2020-11#create-iot-edge-ca-certificates>
 
 For the device name part of the command, DO NOT use the hostname of your IoT Edge Device. Use anything else but that. When I ran the scripts, I used “EdgeDevice” as the device name. You can run these scripts anywhere, it doesn’t affect their usage.
 
@@ -73,7 +73,7 @@ The only certificate files you need at the end of this process are listed below.
  > /private/iot-edge-device-EdgeDevice.key.pem  
  > /certs/azure-iot-test-only.root.ca.cert.pem  
  
-### 2.1 Install Certificates on IoT Edge
+### 2.1 Install Certificates on IoT Edge - Manual Install
  
 1.	Login to Eflow device – do this from a Powershell on the Windows machine hosting EFLOW. Command is Connect-EflowVm. You’re now in the Linux environment.
 
@@ -126,7 +126,14 @@ They will expire in 68 days (at 2022-04-13 10:08:14 UTC) causing module-to-modul
 
 14.	If it’s not running, check the file names and paths are correct and that the iotedge-user can see the certificate files.
 
- 
+### 2.1  Install Certificates on IoT Edge - Scripted Method
+
+1. There are some utility scripts for EFLOW located at <https://github.com/Azure/iotedge-eflow/tree/main/eflow-util/edge-certificates> . One of these automates the copying of the certificate files to the EFLOW VM.
+
+2. These scripts are examples, they will work, but may not meet all needs in terms of security requirements and as such should be reviewed and updated as required.
+
+3. To use the scripts, copy them to a location outside of the EFLOW installation on the Windows Host VM and then reference that location to run the scripts in PowerShell.
+
  
 ### 2.2 Install Certificate on Windows Host
  
@@ -134,6 +141,7 @@ The devices need to trust the certificate that IoT Edge presents to them. To do 
 
 ## 3 - Add EFLOW VM IP Address to Windows VM Hosts file
  
+1. If you are using the Default Switch on the host VM, you shouldn't need to do this step as there is a FQDN you can use for the gateway, see section 7. 
 1. Check the name of the EFLOW VM by running the Get-EflowVmName command from an administrator Powershell session on the Windows VM
 1. Edit the c:\windows\system32\drivers\etc\hosts file to add the EFLOW VM name and IP Address
  
@@ -160,7 +168,7 @@ In the Azure Portal create some devices under your IoT Hub and set them as child
 
 ## 7 Create Service Instances
 
-Copy the ServicesCreateList.txt file from the WindowsConfig directory of this repo to your Windows Host machine. Edit the file to set your device names and connection strings. Note that you need to add a "GatewayHostname" parameter with the name of your EFLOW VM to the end of the connection string. Without that parameter, the device would connect directly to IoT hub without going through IoT Edge.
+Copy the ServicesCreateList.txt file from the WindowsConfig directory of this repo to your Windows Host machine. Edit the file to set your device names and connection strings. Note that you need to add a "GatewayHostname" parameter with the name of your EFLOW VM to the end of the connection string. Without that parameter, the device would connect directly to IoT hub without going through IoT Edge. If you are using the "Default Switch" use the FQDN for the EFLOW VM which is "GatewayHostname-EFLOW.mshome.net"
  
 Once edited, change the extension of the file to .bat if you want to run it without copying and pasting individual lines.
 
