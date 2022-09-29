@@ -176,7 +176,7 @@ Once edited, change the extension of the file to .bat if you want to run it with
 
 ## 8 Start and Stop Service Instances
 
-Open the Services tool, the services should be listed but not running. right click on a service to open the context menu and select start, the service should start sending data to IoT Hub via the EFLOW IoT Edge instance. Repeat for the other service instances.
+Open the Services tool, the services should be listed but not running. Right click on a service to open the context menu and select start, the service should start sending data to IoT Hub via the EFLOW IoT Edge instance. Repeat for the other service instances.
  
 You can change other service parameters to set up auto-start and recovery options.
  
